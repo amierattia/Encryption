@@ -1,0 +1,38 @@
+﻿@model Task1.Models.VigenereViewModel
+
+
+<form asp-action="Vigenere" method="post" class="crypto-form mt-4">
+    <h5 class="section-title">Vigenère Cipher</h5>
+
+    <div class="btn-group mb-4" role="group" aria-label="Cipher mode">
+        <input type="radio" class="btn-check" asp-for="Mode" value="Encrypt" id="vig-encrypt" checked>
+        <label class="btn btn-outline-crypto" for="vig-encrypt">Encrypt</label>
+
+        <input type="radio" class="btn-check" asp-for="Mode" value="Decrypt" id="vig-decrypt">
+        <label class="btn btn-outline-crypto" for="vig-decrypt">Decrypt</label>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Text" class="form-label">Text</label>
+        <textarea asp-for="Text" class="form-control" rows="4" oninput="validateText(this)" placeholder="Enter English text only..." aria-describedby="textHelp"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Key" class="form-label">Keyword</label>
+        <input asp-for="Key" class="form-control" oninput="validateText(this)" placeholder="Enter keyword (A-Z only)" aria-describedby="keyHelp" />
+        <span asp-validation-for="Key" class="text-danger"></span>
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Process</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model?.Result))
+    {
+        <div class="alert crypto-alert mt-4">
+            <strong>Result:</strong>
+            <p class="mb-0">@Model.Result</p>
+        </div>
+    }
+</form>

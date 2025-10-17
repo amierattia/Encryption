@@ -1,0 +1,38 @@
+﻿@model Task1.Models.RailFenceViewModel
+
+
+<form asp-action="RailFence" method="post" class="crypto-form mt-4">
+    <h5 class="section-title">Rail Fence Cipher</h5>
+
+    <div class="btn-group mb-4" role="group" aria-label="Cipher mode">
+        <input type="radio" class="btn-check" asp-for="Mode" value="Encrypt" id="rf-encrypt" checked>
+        <label class="btn btn-outline-crypto" for="rf-encrypt">Encrypt</label>
+
+        <input type="radio" class="btn-check" asp-for="Mode" value="Decrypt" id="rf-decrypt">
+        <label class="btn btn-outline-crypto" for="rf-decrypt">Decrypt</label>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Text" class="form-label">Text</label>
+        <textarea asp-for="Text" class="form-control" rows="4" oninput="validateText(this)" placeholder="Enter English text only..." aria-describedby="textHelp"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Rails" class="form-label">Number of Rails</label>
+        <input asp-for="Rails" type="number" min="2" class="form-control" aria-describedby="railsHelp" />
+        <span asp-validation-for="Rails" class="text-danger"></span>
+    </div>
+
+    <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Process</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model?.Result))
+    {
+        <div class="alert crypto-alert mt-4">
+            <strong>Result:</strong>
+            <p class="mb-0">@Model.Result</p>
+        </div>
+    }
+</form>
