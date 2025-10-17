@@ -11,7 +11,6 @@ namespace Task1.Services
     {
         private static string GenerateKey(string text, string key)
         {
-            // نحافظ إن المفتاح يساوي عدد الحروف فقط (مش يشمل مسافات أو رموز)
             string onlyLetters = "";
             foreach (char c in text)
             {
@@ -34,31 +33,27 @@ namespace Task1.Services
         private static string CipherText(string text, string key)
         {
             string cipherText = "";
-            int j = 0; // لمتابعة مكان الحرف في المفتاح
+            int j = 0;
 
             for (int i = 0; i < text.Length; i++)
             {
                 char current = text[i];
 
-                // لو الحرف مش حرف (رقم، مسافة، رموز...)
                 if (!char.IsLetter(current))
                 {
-                    cipherText += current; // نسيبه زي ما هو
+                    cipherText += current; 
                     continue;
                 }
 
-                // نحدد الـ offset عشان نحافظ على الـ case
                 int offset = char.IsUpper(current) ? 'A' : 'a';
 
-                // المفتاح لازم يكون Upper للسهولة
                 char keyChar = char.ToUpper(key[j % key.Length]);
 
-                // نحسب التحريك
                 int shift = keyChar - 'A';
                 char encryptedChar = (char)(((current - offset + shift) % 26) + offset);
 
                 cipherText += encryptedChar;
-                j++; // نعدّي بس لما يكون الحرف فعلاً حرف
+                j++; 
             }
 
             return cipherText;
