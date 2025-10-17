@@ -1,62 +1,41 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Task1.Services
 {
+    /// <summary>
+    /// Implements a Caesar Cipher encryption system.
+    /// Provides methods to encrypt, decrypt, and crack ciphered text.
+    /// 
+    /// Encrypt: Shifts letters forward by the specified amount.
+    /// Decrypt: Shifts letters backward using (26 - key).
+    /// Crack: Tries all 26 possible shifts to find potential plaintexts.
+    /// 
+    /// The Cipher method handles shifting individual characters.
+    /// Keeps non-letter characters unchanged.
+    /// </summary>
     public class CaesarCipher : ICaesarCipher
     {
-        public string Encrypt(string? input, int shift)
+        public string Encrypt(string? input, int key) => Encipher(input, key);
+        public string Decrypt(string? input, int key) => Encipher(input, 26 - key);
+
+        public IEnumerable<(int Shift, string Candidate)> Crack(string? input) =>
+            string.IsNullOrEmpty(input)
+                ? Enumerable.Empty<(int, string)>()
+                : Enumerable.Range(0, 26).Select(s => (s, Encipher(input, s)));
+
+        private static string Encipher(string? message, int key)
         {
-            return Transform(input, NormalizeShift(shift));
+            if (string.IsNullOrEmpty(message)) return string.Empty;
+            return new string(message.Select(ch => Cipher(ch, key)).ToArray());
         }
 
-        public string Decrypt(string? input, int shift)
+        private static char Cipher(char ch, int key)
         {
-            return Transform(input, NormalizeShift(-shift));
-        }
+            if (!char.IsLetter(ch)) return ch;
 
-        public IEnumerable<(int Shift, string Candidate)> Crack(string? input)
-        {
-            if (string.IsNullOrEmpty(input))
-                yield break;
-
-            // try all shifts 0..25
-            for (int s = 0; s < 26; s++)
-            {
-                yield return (s, Transform(input, NormalizeShift(-s))); // decrypt by shifting -s
-            }
-        }
-
-        private static int NormalizeShift(int shift)
-        {
-            shift %= 26;
-            if (shift < 0) shift += 26;
-            return shift;
-        }
-
-        private static string Transform(string? input, int shift)
-        {
-            if (string.IsNullOrEmpty(input)) return string.Empty;
-
-            var sb = new StringBuilder(input.Length);
-            foreach (var ch in input)
-            {
-                if (char.IsLetter(ch))
-                {
-                    bool isUpper = char.IsUpper(ch);
-                    char baseChar = isUpper ? 'A' : 'a';
-                    int offset = ch - baseChar;
-                    int shifted = (offset + shift) % 26;
-                    if (shifted < 0) shifted += 26;
-                    char result = (char)(baseChar + shifted);
-                    sb.Append(result);
-                }
-                else
-                {
-                    sb.Append(ch);
-                }
-            }
-            return sb.ToString();
+            char offset = char.IsUpper(ch) ? 'A' : 'a';
+            return (char)((((ch + key) - offset) % 26) + offset);
         }
     }
 }
